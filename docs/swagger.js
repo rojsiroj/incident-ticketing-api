@@ -15,8 +15,8 @@ const msg = require("../utils/lang/messages");
 const doc = {
   info: {
     version: "2.0.0", // by default: '1.0.0'
-    title: "EBCo Test API", // by default: 'REST API'
-    description: "API EBCo Developer Test", // by default: ''
+    title: "EBCO Developer Test API", // by default: 'REST API'
+    description: "API EBCO Developer Test", // by default: ''
     contact: {
       name: "Muhamad Sirojudin",
       email: "sirojudin.dev@gmail.com",
@@ -27,17 +27,7 @@ const doc = {
   schemes: ["http"], // by default: ['http']
   consumes: ["application/json"], // by default: ['application/json']
   produces: ["application/json"], // by default: ['application/json']
-  tags: [
-    // by default: empty Array
-    {
-      name: "Queue CRUD", // Tag name
-      description: "Queue related apis", // Tag description
-    },
-    {
-      name: "Health",
-      description: "Health Check",
-    },
-  ],
+  tags: [],
   securityDefinitions: {}, // by default: empty object
   definitions: {
     helathResponse: {
@@ -64,13 +54,6 @@ const doc = {
 };
 
 const outputFile = "./docs/swagger.json";
-const endpointsFiles = ["..js", "./controllers/*.js"];
+const endpointsFiles = ["../app.js", "../controllers/*.js"];
 
-/* NOTE: if you use the express Router, you must pass in the
-   'endpointsFiles' only the root file where the route starts,
-   such as: index.js, app.js, routes.js, ... */
 swaggerAutogen(outputFile, endpointsFiles, doc);
-
-// swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
-//     require('./index.js'); // Your project's root file
-//   });
