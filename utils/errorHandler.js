@@ -19,9 +19,14 @@ module.exports = (err, req, res, next) => {
       message = err.name;
       break;
     case "Invalid token":
+    case "User in token not found":
     case "JsonWebTokenError":
       status = 401;
       message = "Invalid token";
+      break;
+    case "Token must Bearer type":
+      status = 401;
+      message = "Token must Bearer type";
       break;
     case "Forbidden":
       status = 403;

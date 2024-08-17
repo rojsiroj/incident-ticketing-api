@@ -6,20 +6,28 @@ const saltRounds = 10;
 exports.login = async (req, res, next) => {
   try {
     let { username, password } = req.body;
-    if (!username) throw { name: "username is required" };
-    if (!password) throw { name: "Password is required" };
+    if (!username)
+      return res.status(400).json({ message: "Username is required" });
+    if (!password)
+      return res.status(400).json({ message: "Password is required" });
+
     let user = await User.findOne({
       where: {
         username,
       },
     });
-    if (!user) throw { name: "Invalid username/password" };
-    let valid = bcrypt.compare(password, user.password);
-    if (!valid) throw { name: "Invalid username/password" };
-    let access_token = jwt.sign({ id: user.id }, "secretKey", {
-      expiresIn: "1h",
+    if (!user) return res.status(401).json({ message: "Invalid credencial" });
+    bcrypt.compare(password, user.password, (err, data) => {
+      if (err) return res.status(401).json({ message: "Invalid credencial" });
+      if (data) {
+        let access_token = jwt.sign({ id: user.id }, "secretKey", {
+          expiresIn: "1h",
+        });
+        return res.status(200).json({ access_token });
+      } else {
+        return res.status(401).json({ message: "Invalid credencial" });
+      }
     });
-    res.status(200).json({ access_token });
   } catch (error) {
     next(error);
   }
@@ -29,8 +37,10 @@ exports.register = async (req, res, next) => {
   try {
     let { username, password, name, contact } = req.body;
 
-    if (!username) throw { name: "username is required" };
-    if (!password) throw { name: "Password is required" };
+    if (!username)
+      return res.status(400).json({ message: "Username is required" });
+    if (!password)
+      return res.status(400).json({ message: "Password is required" });
 
     bcrypt
       .hash(password, saltRounds)
@@ -51,7 +61,7 @@ exports.register = async (req, res, next) => {
           role: user.role,
         });
       })
-      .catch((err) => console.error(err.message));
+      .catch((error) => next(error));
   } catch (error) {
     next(error);
   }
